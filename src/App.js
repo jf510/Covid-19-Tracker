@@ -5,6 +5,7 @@ import {
   Select,
   Card,
   CardContent,
+  Table,
 } from "@mui/material";
 import InfoBox from "./InfoBox";
 import Map from "./Map";
@@ -21,6 +22,15 @@ function App() {
   const [countries, setCountries] = useState([]);
   const [country, setCountry] = useState("worldwide");
   const [countryInfo, setCountryInfo] = useState({});
+  const [tableData, setTableData] = useEffect([]);
+
+  useEffect(() => {
+    fetch(" https://disease.sh/v3/covid-19/all")
+      .then((response) => response.json())
+      .then((data) => {
+        setCountryInfo(data);
+      });
+  });
 
   useEffect(() => {
     const getCountriesData = async () => {
@@ -31,7 +41,7 @@ function App() {
             name: country.country,
             value: country.countryInfo.iso2,
           }));
-
+          setTableData(data);
           setCountries(countries);
         });
     };
@@ -81,9 +91,21 @@ function App() {
         </div>
 
         <div className="app__stats">
-          <InfoBox title="Coronavirus Cases" cases={123} total={2000} />
-          <InfoBox title="Recovered" cases={1234} total={3000} />
-          <InfoBox title="Deaths" cases={12345} total={8000} />
+          <InfoBox
+            title=" Today's Coronavirus Cases"
+            cases={countryInfo.todayCases}
+            total={countryInfo.cases}
+          />
+          <InfoBox
+            title="Recovered"
+            cases={countryInfo.todayRecovered}
+            total={countryInfo.recovered}
+          />
+          <InfoBox
+            title="Deaths"
+            cases={countryInfo.todayDeaths}
+            total={countryInfo.deaths}
+          />
         </div>
 
         {/** Table */}
@@ -96,6 +118,7 @@ function App() {
         <CardContent>
           <h3>Live Cases by Country</h3>
           {/** Table */}
+          <Table countries={tableData} />
           <h3>Worldwide New Cases</h3>
           {/** GRAPH */}
         </CardContent>
