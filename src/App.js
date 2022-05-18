@@ -1,9 +1,31 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MenuItem, FormControl, Select } from "@mui/material";
 import "./App.css";
 
+// BASE_URL: https://disease.sh/
+// In order to make a call to the API, we need a useEffect
+// Runs once when the component loads and thats it. It will also run an additional time for each varible that is passed in. [variable]
+// async -> send a request, wait for it, do something with it
+
 function App() {
-  const [countries, setCountries] = useState(["USA", "INDIA", "CHINA", "PERU"]);
+  const [countries, setCountries] = useState([]);
+
+  useEffect(() => {
+    const getCountriesData = async () => {
+      await fetch("https://disease.sh/v3/covid-19/countries")
+        .then((response) => response.json())
+        .then((data) => {
+          const countries = data.map((country) => ({
+            name: country.country,
+            value: country.countryInfo.iso2,
+          }));
+
+          setCountries(countries);
+        });
+    };
+
+    getCountriesData();
+  }, []);
 
   return (
     <div className="app">
@@ -12,7 +34,7 @@ function App() {
         <FormControl className="app__dropdown">
           <Select varient="outlined" value="abc">
             {countries.map((country) => (
-              <MenuItem value={country}>{country}</MenuItem>
+              <MenuItem value={country.value}>{country.name}</MenuItem>
             ))}
 
             <MenuItem value="worldwide">WorldWide</MenuItem>
