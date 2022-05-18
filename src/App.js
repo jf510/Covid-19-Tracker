@@ -9,6 +9,7 @@ import "./App.css";
 
 function App() {
   const [countries, setCountries] = useState([]);
+  const [country, setCountry] = useState('worldwide')
 
   useEffect(() => {
     const getCountriesData = async () => {
@@ -32,16 +33,12 @@ function App() {
       <div className="app__header">
         <h1>Covid-19 Tracker</h1>
         <FormControl className="app__dropdown">
-          <Select varient="outlined" value="abc">
+          <Select varient="outlined" value={country}>
+            <MenuItem value="worldwide">Worldwide</MenuItem>
+
             {countries.map((country) => (
               <MenuItem value={country.value}>{country.name}</MenuItem>
             ))}
-
-            <MenuItem value="worldwide">WorldWide</MenuItem>
-            <MenuItem value="worldwide">Option 2</MenuItem>
-            <MenuItem value="worldwide">Option 3</MenuItem>
-            <MenuItem value="worldwide">Option 4</MenuItem>
-            <MenuItem value="worldwide">WorldWide</MenuItem>
           </Select>
         </FormControl>
       </div>
