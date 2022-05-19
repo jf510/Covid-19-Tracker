@@ -5,10 +5,12 @@ import {
   Select,
   Card,
   CardContent,
-  Table,
 } from "@mui/material";
 import InfoBox from "./InfoBox";
 import Map from "./Map";
+import Table from "./Table";
+import { sortData } from "./util";
+import LineGraph from "./LineGraph";
 import "./App.css";
 
 // BASE_URL: https://disease.sh/v3/covid-19/all
@@ -22,7 +24,7 @@ function App() {
   const [countries, setCountries] = useState([]);
   const [country, setCountry] = useState("worldwide");
   const [countryInfo, setCountryInfo] = useState({});
-  const [tableData, setTableData] = useEffect([]);
+  const [tableData, setTableData] = useState([]);
 
   useEffect(() => {
     fetch(" https://disease.sh/v3/covid-19/all")
@@ -30,7 +32,7 @@ function App() {
       .then((data) => {
         setCountryInfo(data);
       });
-  });
+  }, []);
 
   useEffect(() => {
     const getCountriesData = async () => {
@@ -41,7 +43,8 @@ function App() {
             name: country.country,
             value: country.countryInfo.iso2,
           }));
-          setTableData(data);
+          const sortedData = sortData(data);
+          setTableData(sortedData);
           setCountries(countries);
         });
     };
@@ -92,7 +95,7 @@ function App() {
 
         <div className="app__stats">
           <InfoBox
-            title=" Today's Coronavirus Cases"
+            title="Coronavirus Cases"
             cases={countryInfo.todayCases}
             total={countryInfo.cases}
           />
@@ -121,7 +124,9 @@ function App() {
           <Table countries={tableData} />
           <h3>Worldwide New Cases</h3>
           {/** GRAPH */}
+          <LineGraph className='graph'/>
         </CardContent>
+        
       </Card>
     </div>
   );
