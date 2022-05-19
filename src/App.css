@@ -33,3 +33,7 @@ body {
         flex-direction: column;
     }
 }
+
+.graph {
+    max-height: 700px;
+}
